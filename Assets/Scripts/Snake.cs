@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -11,9 +12,11 @@ public class Snake : MonoBehaviour
     private Transform _tr;
     private readonly List<Transform> _segments = new List<Transform>();
     private const int StartSize = 4;
+    private int _hScore;
 
     public Transform segmentPrefab;
     public Text score;
+    public Text highScore;
     private int _count = 0;
 
     private void Start()
@@ -21,6 +24,8 @@ public class Snake : MonoBehaviour
         _tr = gameObject.GetComponent<Transform>();
         ResetState();
         score.text = "Score: " + _count;
+        _hScore = PlayerPrefs.GetInt("highScore");
+        highScore.text = "High score: " + _hScore;
     }
 
     // Update is called once per frame
@@ -82,6 +87,11 @@ public class Snake : MonoBehaviour
 
     private void ResetState()
     {
+        if (_count > _hScore)
+        {
+            HighScore();    
+        }
+       
         _tr.position = Vector2.zero;
         _direction = Vector2.zero;
         _count = 0;
@@ -113,5 +123,11 @@ public class Snake : MonoBehaviour
         {
             ResetState();
         }
+    }
+
+    private void HighScore()
+    {
+        PlayerPrefs.SetInt("highScore", _count);
+        highScore.text = "High score: " + _count;
     }
 }
