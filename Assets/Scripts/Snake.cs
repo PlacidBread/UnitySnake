@@ -17,7 +17,7 @@ public class Snake : MonoBehaviour
     public Transform segmentPrefab;
     public Text score;
     public Text highScore;
-    private int _count = 0;
+    private int _count;
 
     private void Start()
     {
@@ -28,33 +28,41 @@ public class Snake : MonoBehaviour
         highScore.text = "High score: " + _hScore;
     }
 
-    // Update is called once per frame
-    private void Update()
-    {
-        ProcessInput();
-    }
-
     private void FixedUpdate()
     {
+        ProcessInput();
         Wig();
         Move();
     }
 
     private void ProcessInput()
     {
-        if (Input.GetKey(KeyCode.W) && !(_direction == Vector2.down))
+        if (_direction.x != 0f)
         {
-            _direction = Vector2.up;
-        } 
-        else if (Input.GetKey(KeyCode.S) && !(_direction == Vector2.up))
+            if (Input.GetKey(KeyCode.W))
+            {
+                _direction = Vector2.up;
+            }
+            else if (Input.GetKey(KeyCode.S))
+            {
+                _direction = Vector2.down;
+            }
+        }
+
+        else if (_direction.y != 0f)
         {
-            _direction = Vector2.down;
-        } 
-        else if (Input.GetKey(KeyCode.A) && !(_direction == Vector2.right))
-        {
-            _direction = Vector2.left;
-        } 
-        else if (Input.GetKey(KeyCode.D) && !(_direction == Vector2.left))
+            if (Input.GetKey(KeyCode.A))
+            {
+                _direction = Vector2.left;
+            }
+            else if (Input.GetKey(KeyCode.D))
+            {
+                _direction = Vector2.right;
+            }
+        }
+
+        // use space as start key
+        else if (Input.GetKey(KeyCode.Space))
         {
             _direction = Vector2.right;
         }
@@ -63,8 +71,8 @@ public class Snake : MonoBehaviour
     private void Move()
     {
         Vector3 pos = _tr.position;
-        float moveX = Mathf.Round(pos.x + _direction.x);
-        float moveY = Mathf.Round(pos.y + _direction.y);
+        float moveX = Mathf.Round(pos.x) + _direction.x;
+        float moveY = Mathf.Round(pos.y) + _direction.y;
         _tr.position = new Vector2(moveX, moveY);
     }
 
@@ -81,7 +89,7 @@ public class Snake : MonoBehaviour
         // Instantiate the prefab
         Transform segment = Instantiate(segmentPrefab);
         segment.position = _segments[_segments.Count - 1].position;
-        
+
         _segments.Add(segment);
     }
 
@@ -89,19 +97,19 @@ public class Snake : MonoBehaviour
     {
         if (_count > _hScore)
         {
-            HighScore();    
+            HighScore();
         }
-       
+
         _tr.position = Vector2.zero;
         _direction = Vector2.zero;
         _count = 0;
         score.text = "Score: " + _count;
-        
+
         for (int i = 1; i < _segments.Count; i++)
         {
             Destroy(_segments[i].gameObject);
         }
-        
+
         _segments.Clear();
         _segments.Add(transform);
 
@@ -110,7 +118,7 @@ public class Snake : MonoBehaviour
             Grow();
         }
     }
-    
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("food"))
