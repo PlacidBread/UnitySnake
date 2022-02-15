@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class Snake : MonoBehaviour
 {
-    private Vector2 _direction;
+    private static Vector2 _direction;
     private Transform _tr;
     [NonSerialized] public static readonly List<Transform> Segments = new List<Transform>();
     private const int StartSize = 4;

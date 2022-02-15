@@ -20,14 +20,13 @@ public class Food : MonoBehaviour
         Bounds bounds = boxArea.bounds;
         if (checkTail)
         {
-            // call CheckTail while there is a tail collision (assume there is)
-            bool check = false;
-            while (!check)
-            {
+            // call CheckTail while there is a tail collision (assume that there is)
+            bool check;
+            do {
                 float x = Mathf.Round(Random.Range(bounds.min.x, bounds.max.x));
                 float y = Mathf.Round(Random.Range(bounds.min.y, bounds.max.y));
                 check = CheckTail(x, y, segments);
-            }
+            } while (!check);
         }
         else
         {
@@ -46,7 +45,6 @@ public class Food : MonoBehaviour
             int posY = (int) Mathf.Round(pos.y);
             if (posX == (int) x && posY == (int) y)
             {
-                Debug.Log("in tail");
                 return false;
             }
         }
