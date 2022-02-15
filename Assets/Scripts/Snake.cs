@@ -10,7 +10,7 @@ public class Snake : MonoBehaviour
 {
     private Vector2 _direction;
     private Transform _tr;
-    private readonly List<Transform> _segments = new List<Transform>();
+    [NonSerialized] public static readonly List<Transform> Segments = new List<Transform>();
     private const int StartSize = 4;
     private int _hScore;
 
@@ -78,9 +78,9 @@ public class Snake : MonoBehaviour
 
     private void Wig()
     {
-        for (int i = _segments.Count - 1; i > 0; i--)
+        for (int i = Segments.Count - 1; i > 0; i--)
         {
-            _segments[i].position = _segments[i - 1].position;
+            Segments[i].position = Segments[i - 1].position;
         }
     }
 
@@ -88,9 +88,9 @@ public class Snake : MonoBehaviour
     {
         // Instantiate the prefab
         Transform segment = Instantiate(segmentPrefab);
-        segment.position = _segments[_segments.Count - 1].position;
+        segment.position = Segments[Segments.Count - 1].position;
 
-        _segments.Add(segment);
+        Segments.Add(segment);
     }
 
     private void ResetState()
@@ -105,13 +105,13 @@ public class Snake : MonoBehaviour
         _count = 0;
         score.text = "Score: " + _count;
 
-        for (int i = 1; i < _segments.Count; i++)
+        for (int i = 1; i < Segments.Count; i++)
         {
-            Destroy(_segments[i].gameObject);
+            Destroy(Segments[i].gameObject);
         }
 
-        _segments.Clear();
-        _segments.Add(transform);
+        Segments.Clear();
+        Segments.Add(transform);
 
         for (int i = 0; i < StartSize; i++)
         {
