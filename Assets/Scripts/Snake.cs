@@ -13,18 +13,24 @@ public class Snake : MonoBehaviour
     [NonSerialized] public static readonly List<Transform> Segments = new List<Transform>();
     private const int StartSize = 4;
     private int _hScore;
+    private bool _isReset;
 
     public Transform segmentPrefab;
     public Text score;
     public Text highScore;
+    public Text prevScore;
     private int _count;
 
     private void Start()
     {
         _tr = gameObject.GetComponent<Transform>();
-        ResetState();
-        score.text = "Score: " + _count;
+        if (!_isReset)
+        {
+            ResetState();
+        }
+        score.text = _count.ToString();
         _hScore = PlayerPrefs.GetInt("highScore");
+        prevScore.text = "Last score: " + PlayerPrefs.GetInt("prevScore");
         highScore.text = "High score: " + _hScore;
     }
 
@@ -64,7 +70,9 @@ public class Snake : MonoBehaviour
         // use space as start key
         else if (Input.GetKey(KeyCode.Space))
         {
+            Time.timeScale = 1f;
             _direction = Vector2.right;
+            _isReset = false;
         }
     }
 
@@ -102,8 +110,6 @@ public class Snake : MonoBehaviour
 
         _tr.position = Vector2.zero;
         _direction = Vector2.zero;
-        _count = 0;
-        score.text = "Score: " + _count;
 
         for (int i = 1; i < Segments.Count; i++)
         {
@@ -117,6 +123,12 @@ public class Snake : MonoBehaviour
         {
             Grow();
         }
+        
+        PlayerPrefs.SetInt("prevScore", _count);
+        prevScore.text = "Last score: " + _count;
+        _count = 0;
+        score.text = _count.ToString();
+        _isReset = true;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -125,11 +137,14 @@ public class Snake : MonoBehaviour
         {
             Grow();
             _count++;
-            score.text = "Score: " + _count;
+            score.text = _count.ToString();
         }
         else
         {
-            ResetState();
+            if (!_isReset)
+            {
+                ResetState();
+            }
         }
     }
 
