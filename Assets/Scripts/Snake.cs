@@ -26,7 +26,7 @@ public class Snake : MonoBehaviour
         _tr = gameObject.GetComponent<Transform>();
         if (!_isReset)
         {
-            ResetState();
+            ResetState(true);
         }
         score.text = _count.ToString();
         _hScore = PlayerPrefs.GetInt("highScore");
@@ -101,7 +101,7 @@ public class Snake : MonoBehaviour
         Segments.Add(segment);
     }
 
-    private void ResetState()
+    private void ResetState(bool start)
     {
         if (_count > _hScore)
         {
@@ -123,9 +123,14 @@ public class Snake : MonoBehaviour
         {
             Grow();
         }
+
+        if (!start)
+        {
+            // save previous score across runs
+            PlayerPrefs.SetInt("prevScore", _count);
+            prevScore.text = "Last score: " + _count;
+        }
         
-        PlayerPrefs.SetInt("prevScore", _count);
-        prevScore.text = "Last score: " + _count;
         _count = 0;
         score.text = _count.ToString();
         _isReset = true;
@@ -143,7 +148,7 @@ public class Snake : MonoBehaviour
         {
             if (!_isReset)
             {
-                ResetState();
+                ResetState(false);
             }
         }
     }
